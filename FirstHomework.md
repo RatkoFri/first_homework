@@ -44,7 +44,8 @@ The datapath consists of the following modules:
   - Shift Register: This module is used to store the received command and provide parallel output to the PWM generator.
 
 
-![Alt text](./img/datapath.png "Datapath Diagram")
+![Alt text](../img/datapath.png "Datapath Diagram")
+![Alt text](./img/control_unit.png "Datapath Diagram")
 
 
 The datapath can be divided in two parts:
@@ -83,6 +84,7 @@ The control unit is responsible for managing the UART receiver, PWM generator, S
   - Similar to the PRINT1 state, we print the "Control" message character by character.
 
 
+![](../img/control_unit.png "Datapath Diagram")
 ![Alt text](./img/control_unit.png "Datapath Diagram")
 
 
