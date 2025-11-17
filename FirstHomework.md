@@ -32,17 +32,17 @@ Where:
 ## Instructions
 
 Our design can be broken into two parts: 
-    - Datapath 
-    - Control Unit
+  - Datapath 
+  - Control Unit
   
 ### Datapath
 
 The datapath consists of the following modules:
-  - UART Receiver: This module receives data from the UART interface and converts it into parallel data.
-  - PWM Generator: This module generates PWM signals based on the brightness values received from the UART
-  - UART Transmitter: This module prints the messages back to the UART interface for debugging and confirmation.
-  - Shift Register: This module is used to store the received command and provide parallel output to the PWM generator.
-
+  - UART Receiver: This module receives data from the UART interface and save it to the shift register.
+  -  Shift Register: This module is used to store the received command and provide it to the PWM generator.
+  - PWM Generator: This module generates PWM signals based on the brightness values coded in the command.
+  - UART Transmitter: This module prints the messages back to the terminal to inform the user about the system status.
+  
 
 ![](../img/datapath.png "Datapath Diagram")
 ![](./img/control_unit.png "Datapath Diagram")
@@ -55,18 +55,18 @@ The datapath can be divided in two parts:
     - The Shift Register collects all incoming symbols. Once the entire command has been received, it outputs the full command in parallel to the RGB controller when the Control unit activates the read_en signal.
 
     - The RGB controller extracts the brightness values from the command or token and uses them to adjust the PWM generator. The token follows this format:
-"R<VAL_R>G<VAL_G>B<VAL_B>". By asserting the ctrl signal, the Control Unit indicates that a complete command has been received and the PWM generator should update the LED brightness levels accordingly.
+"R<VAL_R>G<VAL_G>B<VAL_B>". By asserting the *ctrl signal*, the Control Unit indicates that a complete command has been received and the PWM generator should update the LED brightness levels accordingly.
 
 -  Transmitting Part (bottom of the image):
-   - This part handles sending messages back to the UART terminal. It contains the UART Transmitter module. The Control Unit enables the UART Transmitter to send feedback messages to the user, such as "Ready" or "Control LED Updated".
+   - This part handles sending messages to the UART terminal. It contains the UART Transmitter module. The Control Unit enables the UART Transmitter to send feedback messages to the user, such as "Ready" or "Control".
 
-   - The strings that need to be transmitted are stored in a ROM block (shown as Message) or another predefined memory region. When the Control Unit enables transmission, each character from the stored string is sent to the UART Transmitter one by one. The tx_index signal selects which character to send next, and the Control Unit updates this index to ensure the characters are transmitted in the correct order.
+   - The strings that need to be transmitted are stored in a ROM block (shown as Message). When the Control Unit enables transmission, each character from the stored string is sent to the UART Transmitter one by one. The *tx_index signal selects which character to send next, and the Control Unit updates this index to ensure the characters are transmitted in the correct order.
 
-   - The UART Transmitter sends each character serially to the UART interface, allowing the user to see system status updates on the terminal. The transmission begins when the Control Unit asserts the tx_start signal.
+   - The UART Transmitter sends each character serially to the UART interface, allowing the user to see system status updates on the terminal. The transmission begins when the Control Unit asserts the *tx_start* signal.
   
 ### Control Unit
 
-The control unit is responsible for managing the UART receiver, PWM generator, Shift register, and UART transmitter. It consists of a finite state machine (FSM) whose states are as follows:
+The control unit is responsible for controlling the UART receiver, PWM generator, Shift register, and UART transmitter. It consists of a finite state machine (FSM) whose states are as follows:
 
 - PRINT1: Print string "Ready" to the serial terminal.
   - We first check if the current character has been completely transmitted by monitoring the *tx_done* signal from the UART transmitter. 
@@ -109,16 +109,17 @@ The control unit is responsible for managing the UART receiver, PWM generator, S
         output logic [DEPTH*DATA_WIDTH-1:0] rd_data
     );
 ```
-- Ports
-  - clk, rst: standard clock and reset signals
-  - wr_en: write enable signal to load data into the shift register
-  - rd_en: read enable signal to output the parallel data
-  - wr_data: input data to be loaded into the shift register
-  - rd_data: output parallel data from the shift register
+  - Ports
+    - clk, rst: standard clock and reset signals
+    - wr_en: write enable signal to load data into the shift register
+    - rd_en: read enable signal to output the parallel data
+    - wr_data: input data to be loaded into the shift register
+    - rd_data: output parallel data from the shift register
 
-- Functionality
-  - On the rising edge of clk, if wr_en is high, the input data wr_data is loaded into the shift register.
-  - If rd_en is high, the contents of the shift register are output in parallel on rd_data.
+  - Functionality
+    - On the rising edge of *clk*, if *wr_en* is high, the input data *wr_data* is loaded into the shift register.
+    - If *rd_en* is high, the contents of the shift register are output in parallel on *rd_data*.
+
 - Design the Control Unit FSM to manage the overall operation of the system.
 - Integrate all the modules together to form the complete system.
 - Simulate the complete system to verify its functionality.
@@ -128,13 +129,14 @@ The control unit is responsible for managing the UART receiver, PWM generator, S
 
 - A complete SystemVerilog code for the UART controlled PWM LED system.
 - A testbench for simulating the design.
-- A brief report documenting the design process, challenges faced, and how they were overcome.
+- A brief report documenting the design process.
 
 ### Milestones
 
-- Implement the modules: UART Receiver, PWM Generator, UART Transmitter, and Shift Register. (40% of the grade))
-- Implement the design without printing messages to the UART terminal. (80% of the grade)
-- Complete the design with UART messages and test it on the FPGA board. (100% of the grade)
+
+
+- Implement the design without printing messages to the UART terminal. (75% of the grade)
+- Complete the design. (100% of the grade)
 
 ## Resources
 
@@ -144,5 +146,5 @@ The control unit is responsible for managing the UART receiver, PWM generator, S
 
 ### Disclaimer
 
-Please note, the provided solution is just a reference implementation. You are encouraged to implement your own version of the design to enhance your learning experience.
+Please note, the provided solution is just a reference implementation. You are encouraged to implement your own version of the design if you wish to do so.
 
