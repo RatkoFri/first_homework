@@ -74,7 +74,7 @@ The control unit is responsible for controlling the UART receiver, PWM generator
   - After all characters in the "Ready" string have been transmitted, we transition to the AWAIT state. During the transition we increment the *tx_index* one last time to prepare for any future transmissions. Additionally, we assert the *done* signal to reset the shift register, ensuring it is ready to receive new commands.
 - AWAIT: Receive the command from the UART receiver.
   - In this state, we monitor the *stop_flag* signal from the UART receiver to determine when a new character has been received.
-  - The stop flag indicates that a complete command has been received, when on *rx* we get the new line character (0x0A).
+  - The stop flag indicates that a complete command has been received. This occurs when on *rx* we get the new line character (0x0A).
   - As each character is received, we can read the data from the shift register, by asserting the *rd_en* signal. 
 - CONTROL: Processes the received command and updates the PWM generator with the new brightness values.
   - this state lasts only one clock cycle.
@@ -87,7 +87,7 @@ The control unit is responsible for controlling the UART receiver, PWM generator
 ![](../img/control_unit.png "Datapath Diagram")
 ![](./img/control_unit.png "Datapath Diagram")
 
-
+> Litle note: at reset, the *tx_start* signal should be asserted to initiate the transmission of the first character. 
 
 
 ### Steps to follow
